@@ -1,52 +1,54 @@
 #include "hash.h"
+#include <iostream>
+#include <string>
+#include <cmath>
 
-// Constructor to initialize the hash table with given number of slots
-HashTable::HashTable(int k) {
-    this->slots = k;
-    table = new Node*[k];
+using namespace std;
+
+// Constructor: initializes the hash table with a given number of slots (k)
+HashTable::HashTable(int size) {
+    k = size;
+    table = new Node*[k];  // Allocate an array of pointers to Node structs
     for (int i = 0; i < k; i++) {
-        table[i] = nullptr;
+        table[i] = nullptr;  // Initialize all slots to nullptr (empty linked lists)
     }
 }
 
-// Destructor to free up memory used by the hash table
-HashTable::~HashTable() {
-    for (int i = 0; i < slots; i++) {
-        Node* current = table[i];
-        while (current != nullptr) {
-            Node* prev = current;
-            current = current->next;
-            delete prev;
-        }
-    }
-    delete[] table;
-}
-
-// Hash Function (You can improve this to suit your needs)
+// Custom hash function to hash a string to an index between 0 and k-1
 int HashTable::hash_function(string text) {
-    int hash = 0;
-    for (char ch : text) {
-        hash = (hash * 31 + ch) % slots; // Using a simple polynomial hash function
+    int hash_value = 0;
+    // A simple hash function that sums the ASCII values of each character
+    for (char c : text) {
+        hash_value += c;
     }
-    return hash;
+    // Return the index within the range of [0, k-1]
+    return hash_value % k;
 }
 
-// Insert a key into the hash table
+// Insert a token into the hash table
 void HashTable::insert(string key) {
-    int slot = hash_function(key);
-    Node* newNode = new Node(key);
-    
-    // Insert new node at the beginning of the linked list
-    newNode->next = table[slot];
-    table[slot] = newNode;
+    int index = hash_function(key);  // Get the index using the hash function
+
+    // Create a new node for the key
+    Node* new_node = new Node(key);
+
+    // If the slot is empty, insert the new node directly
+    if (table[index] == nullptr) {
+        table[index] = new_node;
+    }
+    // Otherwise, append the new node to the beginning of the linked list (chaining)
+    else {
+        new_node->next = table[index];
+        table[index] = new_node;
+    }
 }
 
-// Print the first 5 slots of the hash table
-void HashTable::printTable() {
+// Print the contents of the first 5 slots
+void HashTable::print_slots() {
     cout << "==== Printing the contents of the first 5 slots ====" << endl;
-    for (int i = 0; i < 5 && i < slots; i++) {
+    for (int i = 0; i < 5; i++) {
         cout << "Slot " << i << ": ";
-        Node* current = table[i];
+        Node* current = table[i];  // Traverse the linked list at this slot
         while (current != nullptr) {
             cout << current->key << " ";
             current = current->next;
@@ -55,12 +57,13 @@ void HashTable::printTable() {
     }
 }
 
-// Print the length of each slot (number of elements in each linked list)
-void HashTable::printSlotLengths() {
+// Print the lengths of all slots
+void HashTable::print_slot_lengths() {
     cout << "==== Printing the slot lengths ====" << endl;
-    for (int i = 0; i < slots; i++) {
+    for (int i = 0; i < k; i++) {
         int length = 0;
         Node* current = table[i];
+        // Count the number of nodes in the linked list
         while (current != nullptr) {
             length++;
             current = current->next;
@@ -69,33 +72,54 @@ void HashTable::printSlotLengths() {
     }
 }
 
-// Calculate the standard deviation of slot lengths
-float HashTable::calculateStandardDeviation() {
-    // Calculate the mean of the slot lengths
-    float sum = 0;
-    int* lengths = new int[slots];
-    for (int i = 0; i < slots; i++) {
+// Calculate and print the standard deviation of the slot lengths
+void HashTable::print_standard_deviation() {
+    double mean = 0;
+    double variance = 0;
+
+    // Calculate the mean (average) length of slots
+    for (int i = 0; i < k; i++) {
+        int length = 0;
+        Node* current = table[i];
+        // Count the number of nodes in the linked list
+        while (current != nullptr) {
+            length++;
+            current = current->next;
+        }
+        mean += length;
+    }
+    mean = mean / k;
+
+    // Calculate the variance
+    for (int i = 0; i < k; i++) {
         int length = 0;
         Node* current = table[i];
         while (current != nullptr) {
             length++;
             current = current->next;
         }
-        lengths[i] = length;
-        sum += length;
+        variance += pow(length - mean, 2);
     }
-    
-    float mean = sum / slots;
-    
-    // Calculate the variance
-    float variance = 0;
-    for (int i = 0; i < slots; i++) {
-        variance += pow(lengths[i] - mean, 2);
-    }
-    variance /= slots;
-    
-    delete[] lengths; // Free up memory
-    
-    // Return the square root of the variance (standard deviation)
-    return sqrt(variance);
+    variance = variance / k;
+
+    // Standard deviation is the square root of the variance
+    double stddev = sqrt(variance);
+    cout << "==== Printing the standard deviation =====" << endl;
+    cout << stddev << endl;
 }
+
+// Destructor: cleans up the memory used by the hash table
+HashTable::~HashTable() {
+    // Delete all the nodes in the linked lists
+    for (int i = 0; i < k; i++) {
+        Node* current = table[i];
+        while (current != nullptr) {
+            Node* temp = current;
+            current = current->next;
+            delete temp;
+        }
+    }
+    // Delete the table itself
+    delete[] table;
+}
+
