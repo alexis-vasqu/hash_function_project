@@ -1,6 +1,5 @@
 #include "hash.h"
 #include <iostream>
-#include <string>
 #include <cmath>
 
 using namespace std;
@@ -14,15 +13,10 @@ HashTable::HashTable(int size) {
     }
 }
 
-// Custom hash function to hash a string to an index between 0 and k-1
+// Custom hash function to hash based on the first character of the string
 int HashTable::hash_function(string text) {
-    int hash_value = 0;
-    // A simple hash function that sums the ASCII values of each character
-    for (char c : text) {
-        hash_value += c;
-    }
-    // Return the index within the range of [0, k-1]
-    return hash_value % k;
+    // A simple hash function: use the ASCII value of the first character of the string
+    return (tolower(text[0]) - 'a') % k;
 }
 
 // Insert a token into the hash table
@@ -122,4 +116,3 @@ HashTable::~HashTable() {
     // Delete the table itself
     delete[] table;
 }
-

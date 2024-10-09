@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <cmath>
 
 using namespace std;
 
@@ -27,4 +26,3 @@ public:
     void print_standard_deviation();  // Print the standard deviation of slot lengths
     ~HashTable();  // Destructor to clean up memory
 };
-
