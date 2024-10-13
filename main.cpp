@@ -9,10 +9,10 @@ Your team alias: MMI
 #include <iomanip>
 #include <string>
 #include "hash.h"
-
 using namespace std;
 
 int main() {
+
     int k = 0;
     int n = 0;
     string texts[500];
@@ -28,22 +28,23 @@ int main() {
     }
     // WARNING: End of the tokenizer, DO NOT change this part!
 
-    // Create a hash table with k slots
+    // Create a hash table with 'k' slots
     HashTable hashTable(k);
 
-    // Insert all the tokens into the hash table
+    // Insert all tokens into the hash table
     for (int i = 0; i < n; i++) {
         hashTable.insert(texts[i]);
     }
 
-    // Print the contents of the first 5 slots
-    hashTable.print_slots(); // Updated to match hash.cpp
+    // Print the required outputs
+    //cout << "==== Printing the contents of the first 5 slots ====" << endl;
+    hashTable.printTable(); // Corrected function name for printing slots
 
-    // Print the lengths of all slots
-    hashTable.print_slot_lengths(); // Updated to match hash.cpp
+    //cout << "==== Printing the slot lengths ====" << endl;
+    hashTable.printSlotLengths(); // Corrected function name for printing slot lengths
 
-    // Calculate and print the standard deviation of slot lengths
-    hashTable.print_standard_deviation(); // Updated to match hash.cpp
+    cout << "==== Printing the standard deviation ====" << endl;
+    cout << fixed << setprecision(4) << hashTable.calculateStandardDeviation() << endl; // Corrected function name for standard deviation
 
     return 0;
 }
