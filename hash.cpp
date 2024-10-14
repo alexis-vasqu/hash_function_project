@@ -9,7 +9,7 @@ HashTable::HashTable(int k) {
     }
 }
 
-// Destructor to free up memory used by the hash table
+// Destructor to free up memory used by hash table
 HashTable::~HashTable() {
     for (int i = 0; i < slots; i++) {
         Node* current = table[i];
@@ -22,7 +22,7 @@ HashTable::~HashTable() {
     delete[] table;
 }
 
-// Hash Function (You can improve this to suit your needs)
+// Hash Function
 int HashTable::hash_function(string text) {
     int hash = 0;
     for (char ch : text) {
@@ -31,12 +31,12 @@ int HashTable::hash_function(string text) {
     return hash;
 }
 
-// Insert a key into the hash table
+// Insert key to hash table
 void HashTable::insert(string key) {
     int slot = hash_function(key);
     Node* newNode = new Node(key);
     
-    // Insert new node at the beginning of the linked list
+    // Insert new node at beginning of linked list
     newNode->next = table[slot];
     table[slot] = newNode;
 }
@@ -55,7 +55,7 @@ void HashTable::printTable() {
     }
 }
 
-// Print the length of each slot (number of elements in each linked list)
+// Print length of each slot
 void HashTable::printSlotLengths() {
     cout << "==== Printing the slot lengths ====" << endl;
     for (int i = 0; i < slots; i++) {
@@ -69,7 +69,7 @@ void HashTable::printSlotLengths() {
     }
 }
 
-// Calculate the standard deviation of slot lengths
+// Calculate standard deviation of slot lengths
 float HashTable::calculateStandardDeviation() {
     // Calculate the mean of the slot lengths
     float sum = 0;
